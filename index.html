@@ -4,133 +4,171 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>An Ult1mate C0nverter</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #2c3e50;
-            color: #ecf0f1;
+            font-family: 'Lato', sans-serif;
+            background-color: #f8f9fa; /* Light gray background */
+            color: #212529; /* Dark text */
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start; /* Align items to the top */
+            justify-content: flex-start;
             min-height: 100vh;
             margin: 0;
-            padding-top: 50px; /* Add some padding at the top */
+            padding-top: 40px; /* Adjusted padding */
             box-sizing: border-box;
         }
 
         .title-container {
-            display: inline-block; /* Allows h1 to take only the width of its content */
+            display: inline-block;
             margin-bottom: 30px;
         }
 
         #animated-title {
             font-size: 2.8em;
-            font-family: 'Consolas', 'Courier New', Courier, monospace;
-            color: #3498db;
-            border-right: .10em solid #f39c12; /* Blinking cursor */
-            white-space: nowrap; /* Keep text on a single line */
-            overflow: hidden; /* Hide text that extends beyond current width */
+            font-family: 'Consolas', 'Courier New', Courier, monospace; /* Keep mono for typewriter effect */
+            color: #0056b3; /* Darker blue for light theme */
+            border-right: .10em solid #fd7e14; /* Orange cursor */
+            white-space: nowrap;
+            overflow: hidden;
             letter-spacing: .08em;
-            width: 0; /* Start with no width, animation will expand it */
-            display: inline-block; /* So width property works as expected */
-            margin: 0; /* Remove default h1 margins */
+            width: 0;
+            display: inline-block;
+            margin: 0;
             padding: 0;
         }
 
-        /* Typing animation */
         @keyframes typing {
             from { width: 0; }
-            to { width: 100%; } /* 100% of the content's natural width */
+            to { width: 100%; }
         }
 
-        /* Cursor blink animation */
         @keyframes blink-caret {
             from, to { border-color: transparent; }
-            50% { border-color: #f39c12; }
+            50% { border-color: #fd7e14; }
         }
 
         .upload-section {
-            background-color: #34495e;
-            padding: 25px 30px;
+            background-color: #ffffff; /* White background for the card */
+            padding: 30px 35px;
             border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Softer shadow */
             text-align: center;
             width: 90%;
-            max-width: 500px;
+            max-width: 550px; /* Slightly wider */
         }
 
-        #file-upload {
-            display: block;
-            margin: 0 auto 20px auto;
-            padding: 10px;
-            border: 2px dashed #95a5a6;
-            border-radius: 5px;
-            background-color: #2c3e50;
-            color: #ecf0f1;
+        /* Custom File Upload Button Styling */
+        .file-upload-container {
+            margin-bottom: 25px;
+            position: relative; /* For hidden input positioning */
+        }
+
+        #file-upload { /* Visually hide the default input */
+            width: 0.1px;
+            height: 0.1px;
+            opacity: 0;
+            overflow: hidden;
+            position: absolute;
+            z-index: -1;
+        }
+
+        #file-upload-label {
+            display: inline-flex; /* Use flex to align icon and text */
+            align-items: center;
+            justify-content: center;
+            padding: 12px 25px;
+            background-color: #007bff; /* Primary blue */
+            color: white;
+            border: none;
+            border-radius: 6px;
             cursor: pointer;
-            transition: border-color 0.3s;
+            font-weight: bold;
+            font-size: 1.05em;
+            transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-        #file-upload:hover {
-            border-color: #3498db;
+        #file-upload-label:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
         }
-        /* Hide default file input text */
-        #file-upload::before {
-            content: 'Select or Drag File Here';
-            display: inline-block;
-            padding: 0 10px;
+        #file-upload-label:active {
+            background-color: #004a99; /* Even darker on click */
         }
-        /* Style for when a file is chosen */
-        #file-upload:valid::before {
-             content: 'File Selected: ' attr(data-file-name);
+
+        .upload-icon {
+            width: 20px;
+            height: 17px;
+            fill: currentColor;
+            margin-right: 10px; /* Space between icon and text */
+            vertical-align: middle; /* Ensures good alignment if not using flex */
+        }
+
+        #file-name-display {
+            display: block;
+            margin-top: 15px;
+            font-size: 0.95em;
+            color: #495057; /* Dark gray for file name */
+            min-height: 1.2em; /* Reserve space to prevent layout jump */
         }
 
 
         #converter-options {
-            display: none; /* Hidden by default */
+            display: none;
             margin-top: 20px;
             padding: 20px;
-            background-color: #2c3e50;
+            background-color: #f1f3f5; /* Very light gray, slightly off-white */
             border-radius: 6px;
-            border: 1px solid #46627f;
+            border: 1px solid #dee2e6; /* Light border */
         }
 
         #converter-options label, #converter-options span {
             margin-right: 8px;
-            color: #bdc3c7;
+            color: #495057; /* Dark gray for labels */
+            font-size: 0.95em;
         }
 
         #converter-options select {
-            padding: 8px 12px;
+            padding: 9px 12px;
             margin-right: 15px;
-            border-radius: 4px;
-            border: 1px solid #7f8c8d;
-            background-color: #ecf0f1;
-            color: #2c3e50;
-            min-width: 80px;
+            border-radius: 5px;
+            border: 1px solid #ced4da; /* Standard light border */
+            background-color: #ffffff; /* White select background */
+            color: #495057; /* Dark text in select */
+            min-width: 90px;
+            font-size: 0.9em;
         }
         #from-extension {
             font-weight: bold;
+            background-color: #e9ecef; /* Slightly different bg for disabled 'from' */
         }
 
         #convert-button {
-            padding: 10px 20px;
-            background-color: #27ae60;
+            padding: 10px 22px;
+            background-color: #28a745; /* Bootstrap green */
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 5px;
             cursor: pointer;
             font-size: 1em;
-            transition: background-color 0.3s;
+            font-weight: bold;
+            transition: background-color 0.3s, box-shadow 0.2s ease-in-out;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         #convert-button:hover {
-            background-color: #2ecc71;
+            background-color: #218838; /* Darker green */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+        #convert-button:active {
+            background-color: #1e7e34;
         }
 
+
         .info-text {
-            margin-top: 10px;
-            font-size: 0.9em;
-            color: #95a5a6;
+            margin-top: 15px;
+            font-size: 0.85em;
+            color: #6c757d; /* Muted gray */
         }
 
     </style>
@@ -142,7 +180,16 @@
     </div>
 
     <div class="upload-section">
-        <input type="file" id="file-upload" data-file-name="">
+        <div class="file-upload-container">
+            <input type="file" id="file-upload">
+            <label for="file-upload" id="file-upload-label">
+                <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 17">
+                    <path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-15l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.7 1.5v3.5c0 .8.7 1.5 1.5 1.5h16.4c.8 0 1.5-.7 1.5-1.5v-3.5c0-.5-.3-1.2-.7-1.5z"/>
+                </svg>
+                <span id="file-upload-label-text">Choose a file…</span>
+            </label>
+            <span id="file-name-display"></span>
+        </div>
         
         <div id="converter-options">
             <label for="from-extension">From:</label>
@@ -161,30 +208,28 @@
             // --- Title Animation ---
             const titleElement = document.getElementById('animated-title');
             const titleText = "An Ult1mate C0nverter";
-            const typingSpeedMs = 120; // Milliseconds per character
+            const typingSpeedMs = 120; 
 
-            // Set the full text content (it will be hidden by width:0 and overflow:hidden)
             titleElement.textContent = titleText;
-            
-            // Force a reflow before starting animation, can help ensure it starts correctly
             void titleElement.offsetWidth; 
 
-            // Apply animations
-            // Typing animation: duration based on text length and speed, steps match character count
-            // Blink animation: runs infinitely after a slight delay to start after typing
             const typingDuration = titleText.length * (typingSpeedMs / 1000);
             titleElement.style.animation = 
                 `typing ${typingDuration}s steps(${titleText.length}, end) forwards, ` +
-                `blink-caret .75s step-end infinite`;
-            
+                `blink-caret .75s step-end infinite ${typingDuration}s`; // Start blinking after typing
+
             // --- File Upload and Converter Logic ---
             const fileUploadInput = document.getElementById('file-upload');
+            const fileUploadLabel = document.getElementById('file-upload-label');
+            const fileUploadLabelText = document.getElementById('file-upload-label-text');
+            const initialLabelHTML = fileUploadLabelText.innerHTML; // Save initial "Choose a file..." with icon
+            const fileNameDisplay = document.getElementById('file-name-display');
+
             const converterOptionsDiv = document.getElementById('converter-options');
             const fromExtensionSelect = document.getElementById('from-extension');
             const toExtensionSelect = document.getElementById('to-extension');
             const convertButton = document.getElementById('convert-button');
 
-            // Populate "To" extensions (common examples)
             const targetExtensions = ['PNG', 'JPG', 'GIF', 'WEBP', 'PDF', 'DOCX', 'TXT', 'MP4', 'MP3', 'SVG', 'ICO', 'ZIP'];
             targetExtensions.forEach(ext => {
                 const option = document.createElement('option');
@@ -196,29 +241,32 @@
             fileUploadInput.addEventListener('change', function(event) {
                 const file = event.target.files[0];
                 if (file) {
-                    // Update the data-file-name attribute for the CSS ::before pseudo-element
-                    fileUploadInput.setAttribute('data-file-name', file.name);
+                    fileNameDisplay.textContent = `Selected: ${file.name}`;
+                    // Optionally change label text, e.g., to "Change file"
+                    // fileUploadLabelText.textContent = 'Change file'; 
+                    // Or keep it "Choose a file..." and rely on the name display
 
                     const fileName = file.name;
                     const nameParts = fileName.split('.');
                     let extension = 'unknown';
 
-                    if (nameParts.length > 1) {
+                    if (nameParts.length > 1 && nameParts[nameParts.length - 1] !== "") {
                         extension = nameParts.pop().toLowerCase();
                     }
                     
-                    // Update "From" extension dropdown
-                    fromExtensionSelect.innerHTML = ''; // Clear previous options
+                    fromExtensionSelect.innerHTML = ''; 
                     const option = document.createElement('option');
                     option.value = extension;
                     option.textContent = extension.toUpperCase();
                     fromExtensionSelect.appendChild(option);
-                    fromExtensionSelect.value = extension; // Ensure it's selected
+                    fromExtensionSelect.value = extension; 
 
                     converterOptionsDiv.style.display = 'block';
                 } else {
-                    fileUploadInput.setAttribute('data-file-name', ''); // Clear if no file
+                    // fileUploadLabelText.innerHTML = initialLabelHTML; // Reset to initial if needed
+                    fileNameDisplay.textContent = ''; 
                     converterOptionsDiv.style.display = 'none';
+                    fromExtensionSelect.innerHTML = ''; // Clear from extension
                 }
             });
 
@@ -229,10 +277,10 @@
 
                 if (selectedFile && fromExt && toExt) {
                     alert(`Pretending to convert "${selectedFile.name}" from ${fromExt.toUpperCase()} to ${toExt.toUpperCase()}!`);
-                    // In a real application, you'd handle the file upload and conversion here.
-                    // This often involves sending the file to a server.
+                } else if (!selectedFile) {
+                    alert("Please select a file first.");
                 } else {
-                    alert("Please select a file and ensure extensions are chosen.");
+                    alert("Please ensure 'From' and 'To' extensions are properly set.");
                 }
             });
         };
